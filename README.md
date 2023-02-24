@@ -13,15 +13,46 @@ npx cap sync
 
 <docgen-index>
 
+* [`compile(...)`](#compile)
+* [`download(...)`](#download)
 * [`echo(...)`](#echo)
 * [`load(...)`](#load)
-* [`compile(...)`](#compile)
 * [`prediction(...)`](#prediction)
 
 </docgen-index>
 
 <docgen-api>
 <!--Update the source file JSDoc comments and rerun docgen to update the docs below-->
+
+### compile(...)
+
+```typescript
+compile(options: { value: string; }) => Promise<any>
+```
+
+| Param         | Type                            |
+| ------------- | ------------------------------- |
+| **`options`** | <code>{ value: string; }</code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### download(...)
+
+```typescript
+download(options: { value: string; }) => Promise<any>
+```
+
+| Param         | Type                            |
+| ------------- | ------------------------------- |
+| **`options`** | <code>{ value: string; }</code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
 
 ### echo(...)
 
@@ -42,21 +73,6 @@ echo(options: { value: string; }) => Promise<{ value: string; }>
 
 ```typescript
 load(options: { value: string; }) => Promise<any>
-```
-
-| Param         | Type                            |
-| ------------- | ------------------------------- |
-| **`options`** | <code>{ value: string; }</code> |
-
-**Returns:** <code>Promise&lt;any&gt;</code>
-
---------------------
-
-
-### compile(...)
-
-```typescript
-compile(options: { value: string; }) => Promise<any>
 ```
 
 | Param         | Type                            |
