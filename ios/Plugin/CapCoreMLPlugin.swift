@@ -1,5 +1,6 @@
 import Foundation
 import Capacitor
+import ZIPFoundation
 
 /**
  * Please read the Capacitor iOS Plugin Development Guide
@@ -13,6 +14,12 @@ public class CapCoreMLPlugin: CAPPlugin {
         let value = call.getString("value") ?? ""
         call.resolve([
             "value": implementation.echo(value)
+        ])
+    }
+
+    @objc func download(_ call: CAPPluginCall) {
+        call.resolve([
+            "value": "download"
         ])
     }
 }
