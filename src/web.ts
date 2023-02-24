@@ -1,6 +1,6 @@
 import { WebPlugin } from '@capacitor/core';
 
-import type { CapCoreMLPlugin, LoadOptions } from './definitions';
+import type { CapCoreMLPlugin } from './definitions';
 
 export class CapCoreMLWeb extends WebPlugin implements CapCoreMLPlugin {
   async echo(options: { value: string }): Promise<{ value: string }> {
