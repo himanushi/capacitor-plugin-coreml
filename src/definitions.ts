@@ -1,23 +1,24 @@
 export interface LoadOptions {
-  path: string;
+  completionHandler: (error?: any) => void;
   config?: {
     modelDisplayName?: string;
     parameters?: Record<string, any>;
   };
-  completionHandler: (error?: any) => void;
+  path: string;
 }
 
 export interface PredictionOptions {
-  path: string;
   config?: {
     modelDisplayName?: string;
     parameters?: Record<string, any>;
   };
+  path: string;
 }
 
 export interface CapCoreMLPlugin {
+  compile(options: { value: string }): Promise<any>;
+  download(options: { value: string }): Promise<any>;
   echo(options: { value: string }): Promise<{ value: string }>;
   load(options: { value: string }): Promise<any>;
-  compile(options: { value: string }): Promise<any>;
   prediction(options: { value: string }): Promise<any>;
 }
