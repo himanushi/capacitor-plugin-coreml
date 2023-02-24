@@ -8,15 +8,19 @@ export class CapCoreMLWeb extends WebPlugin implements CapCoreMLPlugin {
     return options;
   }
 
+  async download(options: { value: string }): Promise<void> {
+    console.log('download', options);
+  }
+
   async load(options: { value: string }): Promise<void> {
-    console.log('LOAD', options);
+    console.log('load', options);
   }
 
   async compile(options: { value: string }): Promise<void> {
-    console.log('LOAD', options);
+    console.log('compile', options);
   }
 
   async prediction(options: { value: string }): Promise<void> {
-    console.log('LOAD', options);
+    console.log('prediction', options);
   }
 }
