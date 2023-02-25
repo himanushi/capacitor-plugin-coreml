@@ -1,6 +1,7 @@
 import Foundation
 import Capacitor
 import ZIPFoundation
+import Path
 
 /**
  * Please read the Capacitor iOS Plugin Development Guide
@@ -29,9 +30,7 @@ public class CapCoreMLPlugin: CAPPlugin, FileDownloaderDelegate {
 
     @objc func echo(_ call: CAPPluginCall) {
         let value = call.getString("value") ?? ""
-        if let dl = downloader {
-            print(dl.cancelDownloading())
-        }
+//        unzip()
         call.resolve([
             "value": implementation.echo(value)
         ])
@@ -54,6 +53,19 @@ public class CapCoreMLPlugin: CAPPlugin, FileDownloaderDelegate {
             "value": "download"
         ])
     }
+    
+//    func unzip() async throws {
+//        if let downloadedURL = downloader?.downloadPath {
+//            let uncompressPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("stable-diffusion-v2.1-base_no-i2i_split-einsum.zip")
+//            do {
+//                try FileManager().unzipItem(at: downloadedURL, to: uncompressPath)
+//            } catch {
+//                try uncompressPath.delete()
+//                throw error
+//            }
+//            try downloadedPath.delete()
+//        }
+//    }
     
     @objc func load(_ call: CAPPluginCall) {
         let value = call.getString("value") ?? ""
