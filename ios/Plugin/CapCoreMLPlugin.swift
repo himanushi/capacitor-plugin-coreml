@@ -7,7 +7,23 @@ import ZIPFoundation
  * here: https://capacitorjs.com/docs/plugins/ios
  */
 @objc(CapCoreMLPlugin)
-public class CapCoreMLPlugin: CAPPlugin {
+public class CapCoreMLPlugin: CAPPlugin, FileDownloaderDelegate {
+    func downloadDidStart() {
+        
+    }
+    
+    func downloadDidComplete(withURL url: URL) {
+        
+    }
+    
+    func downloadDidFail(withError error: Error) {
+        
+    }
+    
+    func downloadDidUpdateProgress(progress: Double) {
+        
+    }
+    
     private let implementation = CapCoreML()
     var downloader: FileDownloader?
 
@@ -30,9 +46,9 @@ public class CapCoreMLPlugin: CAPPlugin {
             if FileManager.default.fileExists(atPath: savePath.path) {
                 try? FileManager.default.removeItem(at: savePath)
             }
-            
-            let downloader = FileDownloader(from: url, to: savePath)
-            downloader.startDownloading()
+            downloader = FileDownloader(from: url, to: savePath)
+            downloader!.delegate = self
+            downloader!.startDownloading()
         }
         call.resolve([
             "value": "download"
