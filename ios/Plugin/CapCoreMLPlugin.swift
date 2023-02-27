@@ -2,12 +2,14 @@ import Foundation
 import Capacitor
 import ZIPFoundation
 import Path
+import CoreML
 
 /**
  * Please read the Capacitor iOS Plugin Development Guide
  * here: https://capacitorjs.com/docs/plugins/ios
  */
 @objc(CapCoreMLPlugin)
+@available(iOS 16.2, macOS 13.1, *)
 public class CapCoreMLPlugin: CAPPlugin, FileDownloaderDelegate {
     let modelsDirName = "models"
     
@@ -53,13 +55,22 @@ public class CapCoreMLPlugin: CAPPlugin, FileDownloaderDelegate {
     }
     
     @objc func load(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        if let dl = downloader {
-            print(dl.isDownloading)
-            print(dl.progress)
+        let beginDate = Date()
+        let configuration = MLModelConfiguration()
+        do {
+            let pipeline = try StableDiffusionPipeline(resourcesAt: (Path.documents / "models" / "stable-diffusion-v2.1-base_no-i2i_split-einsum").url,
+                                                       configuration: configuration,
+                                                       disableSafety: false,
+                                                       reduceMemory: false)
+            print("Pipeline loaded in \(Date().timeIntervalSince(beginDate))")
+            call.resolve([
+                "value": "loaded"
+            ])
+        } catch {
+            print(error)
+            call.resolve([
+                "value": "unloaded"
+            ])
         }
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
     }
 }
