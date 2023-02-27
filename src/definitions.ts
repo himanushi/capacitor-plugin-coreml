@@ -7,6 +7,15 @@ export interface LoadOptions {
   path: string;
 }
 
+export interface LoadOptions {
+  completionHandler: (error?: any) => void;
+  config?: {
+    modelDisplayName?: string;
+    parameters?: Record<string, any>;
+  };
+  path: string;
+}
+
 export interface PredictionOptions {
   config?: {
     modelDisplayName?: string;

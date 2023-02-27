@@ -58,13 +58,37 @@ public class CapCoreMLPlugin: CAPPlugin, FileDownloaderDelegate {
         let beginDate = Date()
         let configuration = MLModelConfiguration()
         do {
-            let pipeline = try StableDiffusionPipeline(resourcesAt: (Path.documents / "models" / "stable-diffusion-v2.1-base_no-i2i_split-einsum").url,
-                                                       configuration: configuration,
-                                                       disableSafety: false,
-                                                       reduceMemory: false)
+            let beginDate = Date()
+            let pipelineConfig = MLModelConfiguration()
+            pipelineConfig.allowLowPrecisionAccumulationOnGPU = true
+            pipelineConfig.computeUnits = .cpuAndGPU
+            pipelineConfig.preferredMetalDevice = .none
+            let pipeline = try StableDiffusionPipeline(resourcesAt: (Path.documents / "models/stable-diffusion-v2.1-base_split-einsum_compiled").url,
+                                                       configuration: pipelineConfig,
+                                                       reduceMemory: true)
             print("Pipeline loaded in \(Date().timeIntervalSince(beginDate))")
+            print("Generating...")
+            var configuration = StableDiffusionPipeline.Configuration(prompt: "a photo of car")
+            configuration.stepCount = 3
+            configuration.schedulerType = .pndmScheduler
+            configuration.guidanceScale = 3
+            print("呼ばれてるよおおおおおおお1")
+            let images = try pipeline.generateImages(configuration: configuration)
+            print("呼ばれてるよおおおおおおお3")
+            let interval = Date().timeIntervalSince(beginDate)
+            print("Got images: \(images) in \(interval)")
+            let image = images.compactMap({ $0 }).first
+            var imageStr = ""
+            if let imageData = image {
+                let uiImage = UIImage(cgImage: imageData)
+                if let uiImageData = uiImage.jpegData(compressionQuality: 1.0) {
+                    imageStr = uiImageData.base64EncodedString()
+                }
+            }
+            print("呼ばれてるよおおおおおおお4")
+            print(imageStr)
             call.resolve([
-                "value": "loaded"
+                "value": imageStr
             ])
         } catch {
             print(error)
