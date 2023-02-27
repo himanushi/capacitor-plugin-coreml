@@ -1,5 +1,6 @@
 import Foundation
 import Path
+import ZIPFoundation
 
 protocol FileDownloaderDelegate: AnyObject {
     func downloadDidStart()
@@ -13,8 +14,8 @@ class FileDownloader: NSObject, ObservableObject {
     private var downloadTask: URLSessionDownloadTask?
     private var resumeData: Data?
     private var downloadURL: URL
-    private var downloadedURL: URL
-    private var saveURL: URL
+    private var downloadedPath: Path
+    private var savePath: Path
     
     weak var delegate: FileDownloaderDelegate?
     
@@ -28,10 +29,10 @@ class FileDownloader: NSObject, ObservableObject {
         }
     }
     
-    init(from url: URL, to directory: URL) {
-        downloadURL = url
-        saveURL = directory
-        downloadedURL = directory.appendingPathComponent(downloadURL.lastPathComponent)
+    init(url: String, modelsDirName: String) {
+        downloadURL = URL(string: url)!
+        savePath = Path.documents / modelsDirName
+        downloadedPath = savePath / downloadURL.lastPathComponent
     }
     
     func startDownloading() {
@@ -68,14 +69,31 @@ class FileDownloader: NSObject, ObservableObject {
         downloadTask = nil
         resumeData = nil
     }
+    
+    func unzip() {
+        do {
+            try FileManager().unzipItem(at: downloadedPath.url, to: savePath.url)
+            try FileManager.default.removeItem(at: downloadedPath.url)
+        } catch {
+            // Cleanup
+            let fileName = downloadedPath.url.lastPathComponent
+            let unzipDir = savePath / (fileName as NSString).deletingPathExtension
+            do { try FileManager.default.removeItem(at: unzipDir.url) } catch {}
+        }
+
+        do {
+            // 不要ファイル
+            try FileManager.default.removeItem(at: (savePath / "__MACOSX").url)
+        } catch {}
+    }
 }
 
 extension FileDownloader: URLSessionDownloadDelegate {
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         do {
-            try FileManager.default.moveItem(at: location, to: downloadedURL)
-            delegate?.downloadDidComplete(withURL: downloadedURL)
+            try FileManager.default.moveItem(at: location, to: downloadedPath.url)
+            delegate?.downloadDidComplete(withURL: downloadedPath.url)
         } catch {
             delegate?.downloadDidFail(withError: error)
         }

@@ -9,7 +9,7 @@ import Path
  */
 @objc(CapCoreMLPlugin)
 public class CapCoreMLPlugin: CAPPlugin, FileDownloaderDelegate {
-    var modelDir = "models"
+    let modelsDirName = "models"
     
     func downloadDidStart() {
         print("downloadDidStart")
@@ -30,42 +30,23 @@ public class CapCoreMLPlugin: CAPPlugin, FileDownloaderDelegate {
     var downloader: FileDownloader?
 
     @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        if let dl = downloader {
-            dl.cancelDownloading()
-        }
-        Task {
-            call.resolve([
-                "value": implementation.echo(value)
-            ])
-        }
+        let url = "https://huggingface.co/coreml/coreml-stable-diffusion-2-1-base/resolve/main/split_einsum/stable-diffusion-v2.1-base_no-i2i_split-einsum.zip"
+        downloader = FileDownloader(url: url, modelsDirName: modelsDirName)
+        downloader!.delegate = self
+        downloader!.unzip()
+        call.resolve([
+            "value": "unzip"
+        ])
     }
 
     @objc func download(_ call: CAPPluginCall) {
         let force = true;
-        modelDir = "models";
 //        let urlString = "https://video.kurashiru.com/production/articles/fda43e08-0b80-491b-9424-ad137ecc6067/wide_thumbnail_large.jpg"
-        let urlString = "https://huggingface.co/coreml/coreml-stable-diffusion-2-1-base/resolve/main/split_einsum/stable-diffusion-v2.1-base_no-i2i_split-einsum.zip"
+        let url = "https://huggingface.co/coreml/coreml-stable-diffusion-2-1-base/resolve/main/split_einsum/stable-diffusion-v2.1-base_no-i2i_split-einsum.zip"
 
-        if let url = URL(string: urlString) {
-            let saveDirPath = Path.documents / modelDir
-            let savePath = saveDirPath / url.lastPathComponent
-
-            if FileManager.default.fileExists(atPath: savePath.string) {
-                if (force) {
-                    try? FileManager.default.removeItem(at: savePath.url)
-                } else {
-                    call.resolve([
-                        "value": "done"
-                    ])
-                    return
-                }
-            }
-
-            downloader = FileDownloader(from: url, to: saveDirPath.url)
-            downloader!.delegate = self
-            downloader!.startDownloading()
-        }
+        downloader = FileDownloader(url: url, modelsDirName: modelsDirName)
+        downloader!.delegate = self
+        downloader!.startDownloading()
         call.resolve([
             "value": "queue"
         ])
