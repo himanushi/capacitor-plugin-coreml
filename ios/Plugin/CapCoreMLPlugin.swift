@@ -44,8 +44,8 @@ public class CapCoreMLPlugin: CAPPlugin, FileDownloaderDelegate {
     @objc func download(_ call: CAPPluginCall) {
         let force = true;
         modelDir = "models";
-        let urlString = "https://video.kurashiru.com/production/articles/fda43e08-0b80-491b-9424-ad137ecc6067/wide_thumbnail_large.jpg"
-//        let urlString = "https://huggingface.co/coreml/coreml-stable-diffusion-2-1-base/resolve/main/split_einsum/stable-diffusion-v2.1-base_no-i2i_split-einsum.zip"
+//        let urlString = "https://video.kurashiru.com/production/articles/fda43e08-0b80-491b-9424-ad137ecc6067/wide_thumbnail_large.jpg"
+        let urlString = "https://huggingface.co/coreml/coreml-stable-diffusion-2-1-base/resolve/main/split_einsum/stable-diffusion-v2.1-base_no-i2i_split-einsum.zip"
 
         if let url = URL(string: urlString) {
             let saveDirPath = Path.documents / modelDir
